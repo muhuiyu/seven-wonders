@@ -1,0 +1,12 @@
+{
+    "name": "seven-wonders-monorepo",
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "devDependencies": {
+        "prettier": "^3.0.1",
+        "typescript": "^5.1.6"
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "seven-wonders-game",
+  "version": "1.0.0",
+  "exports": "./src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "lodash": "*"
+  },
+  "devDependencies": {
+    "@types/lodash": "*"
+  }
+}
