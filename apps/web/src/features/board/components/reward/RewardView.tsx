@@ -7,14 +7,22 @@ import {
   isSingleReward,
   isWildcardScience,
 } from 'seven-wonders-game'
-import ClayView from '../symbols/ClayView'
-import CoinView from '../symbols/CoinView'
-import GlassView from '../symbols/GlassView'
-import LoomView from '../symbols/LoomView'
-import OreView from '../symbols/OreView'
-import PapyrusView from '../symbols/PapyrusView'
-import StoneView from '../symbols/StoneView'
-import WoodView from '../symbols/WoodView'
+import {
+  ClayView,
+  CoinView,
+  CompassView,
+  GearView,
+  GlassView,
+  LoomView,
+  OreView,
+  PapyrusView,
+  PointView,
+  SeparatorView,
+  ShieldView,
+  StoneView,
+  TabletView,
+  WoodView,
+} from '../card/Symbols'
 
 interface Props {
   reward: CardReward
@@ -25,23 +33,42 @@ export default function RewardView({ reward }: Props) {
 }
 
 const renderRewardItems = (reward: CardReward) => {
+  const defaultSymbolSize = 40
+
   if (isSingleReward(reward)) {
-    return renderSingleReward(reward)
+    return renderSingleReward(reward, defaultSymbolSize)
   } else if (isMultipleRewards(reward)) {
-    return reward.map(renderSingleReward).map((view, index) => <div key={index}>{view}</div>)
-  } else if (isOneOfRewards(reward)) {
+    const symbolSize = reward.length > 2 ? defaultSymbolSize * 0.8 : defaultSymbolSize
     return (
-      <div>
-        {reward.oneOf.map(renderSingleReward).map((view, index) => {
-          return (
-            <div key={index}>
-              {view}
-              {index !== reward.oneOf.length - 1 && <div>or</div>}
-            </div>
-          )
-        })}
+      <div className="flex flex-row">
+        {reward
+          .map((item) => renderSingleReward(item, symbolSize))
+          .map((view, index) => (
+            <div key={index}>{view}</div>
+          ))}
       </div>
     )
+  } else if (isOneOfRewards(reward)) {
+    let symbolSize = defaultSymbolSize
+    switch (reward.oneOf.length) {
+      case 3:
+        symbolSize = defaultSymbolSize * 0.75
+        break
+      case 4:
+        symbolSize = defaultSymbolSize * 0.6
+        break
+    }
+
+    const views: JSX.Element[] = []
+    reward.oneOf.forEach((item, index) => {
+      const view = renderSingleReward(item, symbolSize)
+      if (view) views.push(view)
+      if (index < reward.oneOf.length - 1) {
+        views.push(<SeparatorView size={symbolSize} />)
+      }
+    })
+
+    return <div className="flex flex-row">{views}</div>
   } else if (isWildcardScience(reward)) {
     return <div>wildcardscience</div>
   } else {
@@ -49,38 +76,59 @@ const renderRewardItems = (reward: CardReward) => {
   }
 }
 
-function renderSingleReward(reward: Reward) {
+function renderSingleReward(reward: Reward, symbolSize: number) {
   for (const resource of ResourceTypes) {
     if (!reward[resource]) continue
     switch (resource) {
       case 'coin':
-        return <CoinView />
+        return <CoinView amount={reward.coin!} size={symbolSize} />
       case 'wood':
-        return <WoodView />
+        return <WoodView size={symbolSize} />
       case 'stone':
-        return <StoneView />
+        return <StoneView size={symbolSize} />
       case 'clay':
-        return <ClayView />
+        return <ClayView size={symbolSize} />
       case 'ore':
-        return <OreView />
+        return <OreView size={symbolSize} />
       case 'glass':
-        return <GlassView />
+        return <GlassView size={symbolSize} />
       case 'loom':
-        return <LoomView />
+        return <LoomView size={symbolSize} />
       case 'papyrus':
-        return <PapyrusView />
+        return <PapyrusView size={symbolSize} />
     }
   }
   if (reward.point) {
-    return <div className="rounded-full border px-2 py-1">{reward.point}</div>
+    return <PointView amount={reward.point} size={symbolSize} />
   } else if (reward.shield) {
-    return <div>🛡️</div>
+    if (reward.shield > 3) {
+      // need to go second line
+      return (
+        <div className="flex flex-row">
+          {Array(reward.shield)
+            .fill(null)
+            .map((_, index) => (
+              <ShieldView key={index} size={symbolSize * 0.7} />
+            ))}
+        </div>
+      )
+    } else {
+      return (
+        <div className="flex flex-row">
+          {Array(reward.shield)
+            .fill(null)
+            .map((_, index) => (
+              <ShieldView key={index} size={symbolSize} />
+            ))}
+        </div>
+      )
+    }
   } else if (reward.scienceMaths) {
-    return <div>📐</div>
+    return <CompassView size={symbolSize} />
   } else if (reward.scienceEngineering) {
-    return <div>⚙️</div>
+    return <GearView size={symbolSize} />
   } else if (reward.scienceWriting) {
-    return <div>✍🏻</div>
+    return <TabletView size={symbolSize} />
   } else if (reward.monetaryLoss) {
     return <div>-{reward.monetaryLoss}</div>
   } else if (reward.pointPer) {

@@ -9,8 +9,8 @@ export default function WonderView({ wonder }: Props) {
   return (
     <div className="flex flex-col p-4">
       <h2 className="">{wonder.name}</h2>
-      <WonderCostView {...{ wonderSide: wonder.day }} />
-      <WonderCostView {...{ wonderSide: wonder.night }} />
+      <WonderCostView {...{ wonderSide: wonder.sides[0] }} />
+      <WonderCostView {...{ wonderSide: wonder.sides[1] }} />
     </div>
   )
 }
