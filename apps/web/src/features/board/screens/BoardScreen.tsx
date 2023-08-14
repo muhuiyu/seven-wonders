@@ -2,17 +2,19 @@ import { useState } from 'react'
 import { AnyCard, GameState, PlayerMove, PlayerMoveType } from 'seven-wonders-game'
 import ChooseMoveModal from '../ChooseActionModal'
 import CurrentPlayerActionView from '../components/bottomSection/CurrentPlayerActionView'
+import { CoinView } from '../components/core/card/Symbols'
 import OtherPlayerPlayeredCardsView from '../components/middleSection/OtherPlayerPlayeredCardsView'
 import PlayedCardsView from '../components/middleSection/PlayedCardsView'
 import OtherPlayersView from '../components/topSection/OtherPlayersView'
 interface Props {
   gameState: GameState
-  onSelectCard(action: PlayerMove): void
+  onSelectPlayerMove(action: PlayerMove): void
 }
 
-export default function BoardScreen({ gameState, onSelectCard }: Props) {
+export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
   const [selectedCard, setSelectedCard] = useState<AnyCard | undefined>(undefined)
   const [isShowingChooseActionModal, setIsShowingChooseActionModal] = useState(false)
+  const [isShowingAdjustTransactionModal, setIsShowingAdjustTransactionModal] = useState(false)
   const [isShowingOtherPlayerPlayedCards, setIsShowingOtherPlayerPlayedCards] = useState(false)
   const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | undefined>(undefined)
 
@@ -37,10 +39,11 @@ export default function BoardScreen({ gameState, onSelectCard }: Props) {
       return
     }
 
+    setIsShowingChooseActionModal(false)
     if (legalMoves.length === 1) {
-      onSelectCard(legalMoves[0])
-      setIsShowingChooseActionModal(false)
+      onSelectPlayerMove(legalMoves[0])
     } else {
+      setIsShowingAdjustTransactionModal(true)
       console.log('available legal moves for card', selectedCard.id, 'to perform', moveType, 'are', legalMoves)
       // user action: choose transaction amount and target, or use ability etc...
       console.log('user needs to choose one')
@@ -73,6 +76,9 @@ export default function BoardScreen({ gameState, onSelectCard }: Props) {
         }}
         onClickLeaderboard={() => {
           // TODO:
+          gameState.players.forEach((player) => {
+            console.log(player.victoryPoints)
+          })
         }}
       />
       {isShowingChooseActionModal && selectedCard && (
@@ -93,6 +99,25 @@ export default function BoardScreen({ gameState, onSelectCard }: Props) {
           className="absolute"
           {...{ gameState, userIndex: selectedPlayerIndex, onClickCard }}
         />
+      )}
+      {isShowingAdjustTransactionModal && (
+        <div className="absolute flex h-1/3 w-1/4 flex-col items-center bg-red-300 p-4">
+          <h1 className="text-xl font-bold">Choose transaction</h1>
+          <div className="my-8 flex w-full flex-1 flex-row items-center justify-between">
+            <div className="relative flex h-full flex-1 items-center justify-center bg-teal-400">
+              <CoinView amount={1} size={40} />
+              <button>+</button>
+            </div>
+            <div className="h-full flex-1 bg-zinc-400"></div>
+            <div className="relative flex h-full flex-1 items-center justify-center bg-lime-400">
+              <CoinView amount={1} size={40} />
+              <button>+</button>
+            </div>
+          </div>
+          <button className="w-[150px] border-2 border-teal-400 bg-orange-500 py-2 text-xl font-bold text-white">
+            Next
+          </button>
+        </div>
       )}
     </div>
   )

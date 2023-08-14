@@ -15,6 +15,9 @@ export default function CurrentUserStateView({ gameState, selectedCard, onClickC
   const currentUserState = gameState.players[currentUserIndex]
   const wonderSide = currentUserState.wonder.sides[currentUserState.wonderSideIndex]
 
+  console.log(currentUserState.possession)
+  console.log(gameState.handCards)
+
   return (
     <div className="flex flex-col items-center gap-y-2">
       {/* stages and coins */}

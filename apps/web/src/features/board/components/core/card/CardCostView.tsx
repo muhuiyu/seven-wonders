@@ -19,47 +19,54 @@ export function getCostItemViews(cost: Resource, symbolSize: number): JSX.Elemen
 
   if (cost.coin) {
     views.push(<CoinView key="coin" amount={cost.coin} size={symbolSize} />)
-  } else if (cost.wood) {
+  }
+  if (cost.wood) {
     Array(cost.wood)
       .fill(null)
       .forEach((_, index) => {
-        views.push(<WoodView key={index} size={symbolSize} />)
+        views.push(<WoodView key={`wood-${index}`} size={symbolSize} />)
       })
-  } else if (cost.stone) {
+  }
+  if (cost.stone) {
     Array(cost.stone)
       .fill(null)
       .forEach((_, index) => {
-        views.push(<StoneView key={index} size={symbolSize} />)
+        views.push(<StoneView key={`stone-${index}`} size={symbolSize} />)
       })
-  } else if (cost.clay) {
+  }
+  if (cost.clay) {
     Array(cost.clay)
       .fill(null)
       .forEach((_, index) => {
-        views.push(<ClayView key={index} size={symbolSize} />)
+        views.push(<ClayView key={`clay-${index}`} size={symbolSize} />)
       })
-  } else if (cost.ore) {
+  }
+  if (cost.ore) {
     Array(cost.ore)
       .fill(null)
       .forEach((_, index) => {
-        views.push(<OreView key={index} size={symbolSize} />)
+        views.push(<OreView key={`ore-${index}`} size={symbolSize} />)
       })
-  } else if (cost.glass) {
+  }
+  if (cost.glass) {
     Array(cost.glass)
       .fill(null)
       .forEach((_, index) => {
-        views.push(<GlassView key={index} size={symbolSize} />)
+        views.push(<GlassView key={`glass-${index}`} size={symbolSize} />)
       })
-  } else if (cost.loom) {
+  }
+  if (cost.loom) {
     Array(cost.loom)
       .fill(null)
       .forEach((_, index) => {
-        views.push(<LoomView key={index} size={symbolSize} />)
+        views.push(<LoomView key={`loom-${index}`} size={symbolSize} />)
       })
-  } else if (cost.papyrus) {
+  }
+  if (cost.papyrus) {
     Array(cost.papyrus)
       .fill(null)
       .forEach((_, index) => {
-        views.push(<PapyrusView key={index} size={symbolSize} />)
+        views.push(<PapyrusView key={`papyrus-${index}`} size={symbolSize} />)
       })
   }
 

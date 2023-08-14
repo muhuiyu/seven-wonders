@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { useState } from 'react'
+import { Button } from '../common/components/Button'
 
 interface Props {
   username: string
@@ -24,7 +25,7 @@ export default function WelcomeScreen({
     <div className="flex h-full w-full flex-col items-center justify-center bg-yellow-100 p-4">
       <h2 className="mb-4 text-3xl font-extrabold">Seven wonders</h2>
 
-      <div className="flex flex-col items-center gap-y-2">
+      <div className="flex flex-col items-start gap-y-2">
         <div className="my-3 flex flex-row gap-x-10 border-b-2 border-gray-200 px-5">
           <button
             className={classNames('text-lg', isShowingJoinGame && 'font-bold text-green-500')}
@@ -125,13 +126,5 @@ const TextField = ({
         }}
       />
     </div>
-  )
-}
-
-const Button = ({ title, onClick }: { title: string; onClick(): void }) => {
-  return (
-    <button type="submit" className="w-fit rounded-md bg-green-600 px-4 py-2 text-white" onClick={onClick}>
-      {title}
-    </button>
   )
 }

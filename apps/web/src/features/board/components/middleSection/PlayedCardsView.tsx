@@ -1,4 +1,4 @@
-import { AnyCard, GameState, getLeftNeighborIndex, getRightNeighborIndex } from 'seven-wonders-game'
+import { AnyCard, GameState, neighborIndexes } from 'seven-wonders-game'
 import alexandriaDayBackground from '../../../../assets/wonders/alexandria-day.png'
 import alexandriaNightBackground from '../../../../assets/wonders/alexandria-night.png'
 import ephesusDayBackground from '../../../../assets/wonders/ephesus-day.png'
@@ -15,26 +15,13 @@ interface Props {
   gameState: GameState
 }
 
-const wonderSideImageNameToUrlDictionary: Record<string, string> = {
-  'alexandria-day.png': alexandriaDayBackground,
-  'alexandria-night.png': alexandriaNightBackground,
-  'ephesus-day.png': ephesusDayBackground,
-  'ephesus-night.png': ephesusNightBackground,
-  'giza-day.png': gizaDayBackground,
-  'giza-night.png': gizaNightBackground,
-  'rhodes-day.png': rhodesDayBackground,
-  'rhodes-night.png': rhodesNightBackground,
-}
-
 export default function PlayedCardsView({ gameState }: Props) {
   const numberOfPlayers = gameState.players.length
 
   const currentPlayerIndex = gameState.userIndex
   const currentPlayerState = gameState.players[currentPlayerIndex]
   const currentPlayerWonderSide = currentPlayerState.wonder.sides[currentPlayerState.wonderSideIndex]
-
-  const leftNeighborIndex = getLeftNeighborIndex(currentPlayerIndex, numberOfPlayers)
-  const rightNeighborIndex = getRightNeighborIndex(currentPlayerIndex, numberOfPlayers)
+  const { leftIndex, rightIndex } = neighborIndexes(currentPlayerIndex, numberOfPlayers)
 
   const onClickCard = (card: AnyCard) => {
     // TODO:
@@ -56,10 +43,7 @@ export default function PlayedCardsView({ gameState }: Props) {
         alt=""
       />
       <div className="relative flex w-full flex-row ">
-        <OtherPlayerPlayeredCardsView
-          className="flex h-full"
-          {...{ gameState, userIndex: leftNeighborIndex, onClickCard }}
-        />
+        <OtherPlayerPlayeredCardsView className="flex h-full" {...{ gameState, userIndex: leftIndex, onClickCard }} />
         <div className="flex flex-1 flex-col p-4">
           <div className="flex flex-row items-start">
             <InitialResourceView {...{ resource: currentPlayerState.wonder.initialResource, symbolSize: 32 }} />
@@ -76,11 +60,19 @@ export default function PlayedCardsView({ gameState }: Props) {
             </div>
           </div>
         </div>
-        <OtherPlayerPlayeredCardsView
-          className="flex h-full"
-          {...{ gameState, userIndex: rightNeighborIndex, onClickCard }}
-        />
+        <OtherPlayerPlayeredCardsView className="flex h-full" {...{ gameState, userIndex: rightIndex, onClickCard }} />
       </div>
     </div>
   )
+}
+
+const wonderSideImageNameToUrlDictionary: Record<string, string> = {
+  'alexandria-day.png': alexandriaDayBackground,
+  'alexandria-night.png': alexandriaNightBackground,
+  'ephesus-day.png': ephesusDayBackground,
+  'ephesus-night.png': ephesusNightBackground,
+  'giza-day.png': gizaDayBackground,
+  'giza-night.png': gizaNightBackground,
+  'rhodes-day.png': rhodesDayBackground,
+  'rhodes-night.png': rhodesNightBackground,
 }

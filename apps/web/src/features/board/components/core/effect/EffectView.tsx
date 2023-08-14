@@ -148,10 +148,16 @@ const renderEffectItems = (effect: Effect, defaultSymbolSize: number) => {
         break
     }
 
-    const views: JSX.Element[] = []
+    let views: JSX.Element[] = []
     effect.oneOf.forEach((item, index) => {
       const view = renderSingleEffect(item, symbolSize, index)
-      if (view) views.push(view)
+      if (view) {
+        if (Array.isArray(view)) {
+          views = [...views, ...view]
+        } else {
+          views.push(view)
+        }
+      }
       if (index < effect.oneOf.length - 1) {
         views.push(<SeparatorView key={index} size={symbolSize} />)
       }
@@ -218,19 +224,19 @@ function renderSingleEffect(effect: BaseEffect, symbolSize: number, viewIndex: n
       case 'coin':
         return <CoinView key={`coin-${viewIndex}`} amount={effect.coin!} size={symbolSize} />
       case 'wood':
-        return <WoodView key={`wood-${viewIndex}`} size={symbolSize} />
+        return [...Array(effect.wood!)].map((_, index) => <WoodView key={`wood-${index}`} size={symbolSize} />)
       case 'stone':
-        return <StoneView key={`stone-${viewIndex}`} size={symbolSize} />
+        return [...Array(effect.stone!)].map((_, index) => <StoneView key={`stone-${index}`} size={symbolSize} />)
       case 'clay':
-        return <ClayView key={`clay-${viewIndex}`} size={symbolSize} />
+        return [...Array(effect.clay!)].map((_, index) => <ClayView key={`clay-${index}`} size={symbolSize} />)
       case 'ore':
-        return <OreView key={`ore-${viewIndex}`} size={symbolSize} />
+        return [...Array(effect.ore!)].map((_, index) => <OreView key={`ore-${index}`} size={symbolSize} />)
       case 'glass':
-        return <GlassView key={`glass-${viewIndex}`} size={symbolSize} />
+        return [...Array(effect.glass!)].map((_, index) => <GlassView key={`glass-${index}`} size={symbolSize} />)
       case 'loom':
-        return <LoomView key={`loom-${viewIndex}`} size={symbolSize} />
+        return [...Array(effect.loom!)].map((_, index) => <LoomView key={`loom-${index}`} size={symbolSize} />)
       case 'papyrus':
-        return <PapyrusView key={`papyrus-${viewIndex}`} size={symbolSize} />
+        return [...Array(effect.papyrus!)].map((_, index) => <PapyrusView key={`papyrus-${index}`} size={symbolSize} />)
     }
   }
   if (effect.point) {
@@ -240,11 +246,9 @@ function renderSingleEffect(effect: BaseEffect, symbolSize: number, viewIndex: n
       // need to go second line
       return (
         <div key={viewIndex} className="flex flex-row justify-center">
-          {Array(effect.shield)
-            .fill(null)
-            .map((_, index) => (
-              <ShieldView key={index} size={symbolSize * 0.7} />
-            ))}
+          {[...Array(effect.ore!)].map((_, index) => (
+            <ShieldView key={index} size={symbolSize * 0.7} />
+          ))}
         </div>
       )
     } else {
@@ -265,7 +269,7 @@ function renderSingleEffect(effect: BaseEffect, symbolSize: number, viewIndex: n
   } else if (effect.scienceWriting) {
     return <TabletView key={viewIndex} size={symbolSize} />
   } else if (effect.monetaryLoss) {
-    return <div key={viewIndex}>-{effect.monetaryLoss}</div>
+    return <div key={viewIndex}>-{effect.monetaryLoss.multiplier}</div>
   } else if (effect.pointPer) {
     return (
       <div key={viewIndex}>
