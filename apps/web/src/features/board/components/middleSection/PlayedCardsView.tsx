@@ -9,7 +9,7 @@ import rhodesDayBackground from '../../../../assets/wonders/rhodes-day.png'
 import rhodesNightBackground from '../../../../assets/wonders/rhodes-night.png'
 import CardView from '../core/card/CardView'
 import InitialResourceView from './InitialResourceView'
-import OtherPlayerPlayeredCardsView from './OtherPlayerPlayeredCardsView'
+import NeighborPlayedCardsView from './NeighborPlayedCardsView'
 
 interface Props {
   gameState: GameState
@@ -38,12 +38,12 @@ export default function PlayedCardsView({ gameState }: Props) {
     >
       <div className="absolute left-0 top-0 h-full w-full bg-gray-700 opacity-100"></div>
       <img
-        className="absolute left-0 top-0 object-cover opacity-40"
+        className="absolute left-0 top-0 w-full object-cover opacity-40"
         src={wonderSideImageNameToUrlDictionary[currentPlayerWonderSide.imageName]}
         alt=""
       />
       <div className="relative flex w-full flex-row ">
-        <OtherPlayerPlayeredCardsView className="flex h-full" {...{ gameState, userIndex: leftIndex, onClickCard }} />
+        <NeighborPlayedCardsView className="flex h-full" {...{ gameState, userIndex: leftIndex, onClickCard }} />
         <div className="flex flex-1 flex-col p-4">
           <div className="flex flex-row items-start">
             <InitialResourceView {...{ resource: currentPlayerState.wonder.initialResource, symbolSize: 32 }} />
@@ -60,7 +60,7 @@ export default function PlayedCardsView({ gameState }: Props) {
             </div>
           </div>
         </div>
-        <OtherPlayerPlayeredCardsView className="flex h-full" {...{ gameState, userIndex: rightIndex, onClickCard }} />
+        <NeighborPlayedCardsView className="flex h-full" {...{ gameState, userIndex: rightIndex, onClickCard }} />
       </div>
     </div>
   )

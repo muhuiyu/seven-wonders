@@ -13,7 +13,7 @@ import WonderStagesView from '../core/wonder/WonderStagesView'
 
 interface Props {
   gameState: GameState
-  onClickPlayer(playerIndex: number): void
+  onClickPlayer(playerIndex: number, topSectionPosition: number): void
 }
 
 const wonderSideImageNameToUrlDictionary: Record<string, string> = {
@@ -43,7 +43,7 @@ export default function OtherPlayersView({ gameState, onClickPlayer }: Props) {
                 position: 'relative',
               }}
               onClick={() => {
-                onClickPlayer(index)
+                onClickPlayer(player.index, index)
               }}
             >
               <div className="absolute left-0 top-0 h-full w-full bg-black opacity-100"></div>

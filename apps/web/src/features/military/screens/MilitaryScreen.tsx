@@ -1,7 +1,9 @@
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import classNames from 'classnames'
 import { GameState, Player, neighborIndexes } from 'seven-wonders-game'
 import ageOneMilitaryToken from '../../../assets/symbols/ageOneMilitaryToken.png'
+import defeatToken from '../../../assets/symbols/defeatToken.png'
 import { ShieldView } from '../../board/components/core/card/Symbols'
 
 interface Props {
@@ -62,10 +64,33 @@ const ResultView = ({ player, neighbor }: { player: Player; neighbor: Player }) 
       : player.possession.shields === neighbor.possession.shields
       ? 'draw'
       : 'lose'
+  const tokenView = () => {
+    switch (result) {
+      case 'win':
+        return <img src={ageOneMilitaryToken} width={120} />
+      case 'lose':
+        return <img src={defeatToken} width={120} />
+      case 'draw':
+        return <div style={{ height: 120, width: 120 }}></div>
+    }
+  }
+  const textColorString = (): string => {
+    switch (result) {
+      case 'win':
+        return 'text-yellow-500'
+      case 'lose':
+        return 'text-red-500'
+      case 'draw':
+        return 'text-white'
+    }
+  }
   return (
     <div className="flex h-4/5 w-[200px] flex-col items-center justify-center">
-      <img src={ageOneMilitaryToken} width={120} />
-      <div className="mt-6 text-4xl font-bold text-yellow-500" style={{ textShadow: '1px 1px 2px black' }}>
+      {tokenView()}
+      <div
+        className={classNames('mt-6 text-4xl font-bold', textColorString())}
+        style={{ textShadow: '1px 1px 2px black' }}
+      >
         {result}
       </div>
       <div className="text-white">against</div>

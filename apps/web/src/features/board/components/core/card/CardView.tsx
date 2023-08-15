@@ -10,19 +10,37 @@ interface Props {
   onClick(): void
   className?: string
   isPreview?: boolean
+  isShowingName?: boolean
 }
 
-export default function CardView({ card, onClick, className, isPreview }: Props) {
-  const color = cardColor[card.category]
+export default function CardView({ card, onClick, className, isPreview, isShowingName }: Props) {
   if (isPreview) {
     const symbolSize = 28
     return (
       <div
         className={classNames('flex flex-col items-center rounded-sm', className)}
-        style={{ backgroundColor: cardColor[card.category], height: symbolSize * 1.25, width: symbolSize * 4 }}
+        style={{
+          backgroundColor: cardColor[card.category],
+          height: symbolSize * 1.5,
+          width: isShowingName ? symbolSize * 10 : symbolSize * 4,
+        }}
         onClick={onClick}
       >
-        {renderEffectContent(card, symbolSize)}
+        {isShowingName ? (
+          <div className="flex w-full flex-row items-center pl-2">
+            <h2
+              className="flex-1 font-medium"
+              style={{
+                color: cardTextColor[card.category],
+              }}
+            >
+              {card.name}
+            </h2>
+            {renderEffectContent(card, symbolSize, 40, 'border-0')}
+          </div>
+        ) : (
+          renderEffectContent(card, symbolSize)
+        )}
       </div>
     )
   } else {
@@ -46,20 +64,25 @@ export default function CardView({ card, onClick, className, isPreview }: Props)
           {card.cost && (
             <div
               className="ml-1 h-fit w-6 border-b border-l border-r border-black py-1 text-center"
-              style={{ backgroundColor: color }}
+              style={{ backgroundColor: cardColor[card.category] }}
             >
               <CardCostView cost={card.cost} />
             </div>
           )}
-          {card.chainFrom && <ChainFromView {...{ cardId: card.chainFrom, backgroundColor: color }} />}
+          {card.chainFrom && (
+            <ChainFromView {...{ cardId: card.chainFrom, backgroundColor: cardColor[card.category] }} />
+          )}
         </div>
       </div>
     )
   }
 }
-const renderEffectContent = (card: AnyCard, symbolSize: number, height?: number) => {
+const renderEffectContent = (card: AnyCard, symbolSize: number, height?: number, className?: string) => {
   return (
-    <div className="flex h-full w-full items-center justify-center border border-black p-1" style={{ height: height }}>
+    <div
+      className={classNames('flex h-full w-full items-center justify-center border border-black p-1', className)}
+      style={{ height: height }}
+    >
       <EffectView {...{ effect: card.effect, cardId: card.id, symbolSize: symbolSize }} />
     </div>
   )
@@ -75,4 +98,16 @@ const cardColor: Record<CardCategory, string> = {
   guilds: '#9370db',
   leaders: '#d3d3d3',
   cities: '#000000',
+}
+
+const cardTextColor: Record<CardCategory, string> = {
+  rawMaterials: '#fff',
+  manufacturedGoods: '#fff',
+  civilianStructures: '#fff',
+  scientificStructures: '#fff',
+  commercialStructures: '#000',
+  militaryStructures: '#fff',
+  guilds: '#fff',
+  leaders: '#000',
+  cities: '#fff',
 }

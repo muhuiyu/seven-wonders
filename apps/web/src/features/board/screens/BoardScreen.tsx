@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import classNames from 'classnames'
+import { useEffect, useState } from 'react'
 import { AnyCard, GameState, PlayerMove, PlayerMoveType } from 'seven-wonders-game'
+import LeaderBoardView from '../../gameEnd/components/LeaderBoardView'
 import ChooseMoveModal from '../ChooseActionModal'
+import AdjustTransactionView from '../components/bottomSection/AdjustTransactionView'
 import CurrentPlayerActionView from '../components/bottomSection/CurrentPlayerActionView'
 import { CoinView } from '../components/core/card/Symbols'
-import OtherPlayerPlayeredCardsView from '../components/middleSection/OtherPlayerPlayeredCardsView'
 import PlayedCardsView from '../components/middleSection/PlayedCardsView'
+import TopPlayerPlayedCardListView from '../components/middleSection/TopPlayerPlayedCardListView'
 import OtherPlayersView from '../components/topSection/OtherPlayersView'
 interface Props {
   gameState: GameState
@@ -15,8 +18,34 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
   const [selectedCard, setSelectedCard] = useState<AnyCard | undefined>(undefined)
   const [isShowingChooseActionModal, setIsShowingChooseActionModal] = useState(false)
   const [isShowingAdjustTransactionModal, setIsShowingAdjustTransactionModal] = useState(false)
+  const [legalMoveCandidates, setLegalMoveCandidates] = useState<PlayerMove[]>([])
   const [isShowingOtherPlayerPlayedCards, setIsShowingOtherPlayerPlayedCards] = useState(false)
-  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | undefined>(undefined)
+  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<
+    { playerIndex: number; topSectionPosition: number } | undefined
+  >(undefined)
+  const [isShowingMonetarylossPanel, setIsShowingMonetarylossPanel] = useState(false)
+  const [isShowingLeaderboard, setIsShowingLeaderboard] = useState(false)
+  const [isShowingCardDescriptionView, setIsShowingCardDescriptionView] = useState(false)
+  const [mousePosition, setMousePosition] = useState({})
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setMousePosition({
+        x: event.clientX,
+        y: event.clientY,
+      })
+    }
+    document.addEventListener('mousemove', handleMouseMove)
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+    }
+  })
+
+  const onClickOtherPlayerPlayedCard = (card: AnyCard) => {
+    // TODO:
+    console.log('clicked on other player played card', card.id, 'mouse position is', mousePosition)
+    setIsShowingCardDescriptionView(!isShowingCardDescriptionView)
+  }
 
   const onClickCard = (card: AnyCard) => {
     setSelectedCard(card)
@@ -42,23 +71,30 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
     setIsShowingChooseActionModal(false)
     if (legalMoves.length === 1) {
       onSelectPlayerMove(legalMoves[0])
+      setLegalMoveCandidates([])
     } else {
       setIsShowingAdjustTransactionModal(true)
+      setLegalMoveCandidates(legalMoves)
       console.log('available legal moves for card', selectedCard.id, 'to perform', moveType, 'are', legalMoves)
-      // user action: choose transaction amount and target, or use ability etc...
       console.log('user needs to choose one')
-      // onSelectCard()
     }
   }
 
-  const onClickPlayer = (playerIndex: number) => {
-    console.log('did select', playerIndex)
-    if (playerIndex === selectedPlayerIndex) {
+  const onSelectLegalMove = (move: PlayerMove) => {
+    setIsShowingAdjustTransactionModal(false)
+    onSelectPlayerMove(move)
+  }
+
+  const onClickPlayer = (playerIndex: number, topSectionPosition: number) => {
+    if (playerIndex === selectedPlayerIndex?.playerIndex) {
       setIsShowingOtherPlayerPlayedCards(false)
       setSelectedPlayerIndex(undefined)
     } else {
       setIsShowingOtherPlayerPlayedCards(true)
-      setSelectedPlayerIndex(playerIndex)
+      setSelectedPlayerIndex({
+        playerIndex,
+        topSectionPosition,
+      })
     }
   }
 
@@ -75,10 +111,7 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
           // TODO:
         }}
         onClickLeaderboard={() => {
-          // TODO:
-          gameState.players.forEach((player) => {
-            console.log(player.victoryPoints)
-          })
+          setIsShowingLeaderboard(true)
         }}
       />
       {isShowingChooseActionModal && selectedCard && (
@@ -95,28 +128,48 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
         />
       )}
       {isShowingOtherPlayerPlayedCards && selectedPlayerIndex && (
-        <OtherPlayerPlayeredCardsView
-          className="absolute"
-          {...{ gameState, userIndex: selectedPlayerIndex, onClickCard }}
+        <TopPlayerPlayedCardListView
+          className={classNames('absolute top-[130px]')}
+          {...{
+            gameState,
+            userIndex: selectedPlayerIndex.playerIndex,
+            topSectionPosition: selectedPlayerIndex.topSectionPosition,
+            onClickCard: onClickOtherPlayerPlayedCard,
+          }}
         />
       )}
       {isShowingAdjustTransactionModal && (
-        <div className="absolute flex h-1/3 w-1/4 flex-col items-center bg-red-300 p-4">
-          <h1 className="text-xl font-bold">Choose transaction</h1>
-          <div className="my-8 flex w-full flex-1 flex-row items-center justify-between">
-            <div className="relative flex h-full flex-1 items-center justify-center bg-teal-400">
-              <CoinView amount={1} size={40} />
-              <button>+</button>
-            </div>
-            <div className="h-full flex-1 bg-zinc-400"></div>
-            <div className="relative flex h-full flex-1 items-center justify-center bg-lime-400">
-              <CoinView amount={1} size={40} />
-              <button>+</button>
-            </div>
+        <AdjustTransactionView
+          {...{ gameState, legalMoveCandidates, onSelectLegalMove }}
+          onClickCancel={() => {
+            setIsShowingAdjustTransactionModal(false)
+          }}
+        />
+      )}
+      {isShowingMonetarylossPanel && (
+        <div className="absolute flex w-1/2 flex-col items-center bg-violet-300">
+          <div className="flex flex-row items-center gap-x-4">
+            <div className="text-3xl">-</div>
+            <div className="rounded-full bg-white text-3xl">-1</div>
+            <CoinView amount={-2} size={60} />
+            <div className="text-3xl">+</div>
           </div>
           <button className="w-[150px] border-2 border-teal-400 bg-orange-500 py-2 text-xl font-bold text-white">
-            Next
+            Accept
           </button>
+        </div>
+      )}
+      {isShowingLeaderboard && (
+        <div className="absolute h-4/5 w-4/5">
+          <LeaderBoardView
+            {...{
+              gameState,
+              buttonTitle: 'Close',
+              onClickActionButton: () => {
+                setIsShowingLeaderboard(false)
+              },
+            }}
+          />
         </div>
       )}
     </div>

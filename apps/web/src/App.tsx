@@ -48,6 +48,11 @@ function App() {
     socketRef.current?.emit('goToNextPhase', gameState.id, gameState.userIndex)
   }
 
+  const onNewGameClick = () => {
+    if (!gameState) return
+    socketRef.current?.emit('newGame', gameState.players[gameState.userIndex].name)
+  }
+
   if (gameState) {
     console.log('current phase', gameState.phase)
     switch (gameState.phase) {
@@ -60,7 +65,7 @@ function App() {
       case 'specialAbility':
         break
       case 'gameEnd':
-        return <GameEndScreen {...{ gameState }} />
+        return <GameEndScreen {...{ gameState, onNewGameClick }} />
       default:
         // leaders, age1, age2, age3
         return <BoardScreen {...{ gameState, onSelectPlayerMove }} />
