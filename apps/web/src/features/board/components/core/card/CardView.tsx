@@ -1,19 +1,24 @@
 import classNames from 'classnames'
-import { AnyCard, CardCategory } from 'seven-wonders-game'
+import { AnyCard, CardCategory, findCard } from 'seven-wonders-game'
 import oreBackground from '../../../../../assets/ore.png'
+import { getChainFrom, getResource } from '../common/requirementUtils'
 import EffectView from '../effect/EffectView'
 import CardCostView from './CardCostView'
 import { ChainFromView } from './ChainFromView'
 
 interface Props {
-  card: AnyCard
+  cardId: AnyCard['id']
   onClick(): void
   className?: string
   isPreview?: boolean
   isShowingName?: boolean
 }
 
-export default function CardView({ card, onClick, className, isPreview, isShowingName }: Props) {
+export default function CardView({ cardId, onClick, className, isPreview, isShowingName }: Props) {
+  const card = findCard(cardId)
+  if (!card) {
+    throw new Error(`Card not found: ${cardId}`)
+  }
   if (isPreview) {
     const symbolSize = 28
     return (
@@ -61,16 +66,18 @@ export default function CardView({ card, onClick, className, isPreview, isShowin
             backgroundSize: 'cover',
           }}
         >
-          {card.cost && (
+          {card.requirement && getResource(card.requirement) && (
             <div
               className="ml-1 h-fit w-6 border-b border-l border-r border-black py-1 text-center"
               style={{ backgroundColor: cardColor[card.category] }}
             >
-              <CardCostView cost={card.cost} />
+              <CardCostView cost={getResource(card.requirement)!} />
             </div>
           )}
-          {card.chainFrom && (
-            <ChainFromView {...{ cardId: card.chainFrom, backgroundColor: cardColor[card.category] }} />
+          {card.requirement && getChainFrom(card.requirement) && (
+            <ChainFromView
+              {...{ cardId: getChainFrom(card.requirement)!, backgroundColor: cardColor[card.category] }}
+            />
           )}
         </div>
       </div>

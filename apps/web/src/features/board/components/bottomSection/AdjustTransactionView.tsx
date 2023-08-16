@@ -1,10 +1,16 @@
 import { GameState, Player, PlayerMove, neighborIndexes } from 'seven-wonders-game'
 import alexandriaDayBackground from '../../../../assets/wonders/alexandria-day.png'
 import alexandriaNightBackground from '../../../../assets/wonders/alexandria-night.png'
+import babylonDayBackground from '../../../../assets/wonders/babylon-day.png'
+import babylonNightBackground from '../../../../assets/wonders/babylon-night.png'
 import ephesusDayBackground from '../../../../assets/wonders/ephesus-day.png'
 import ephesusNightBackground from '../../../../assets/wonders/ephesus-night.png'
 import gizaDayBackground from '../../../../assets/wonders/giza-day.png'
 import gizaNightBackground from '../../../../assets/wonders/giza-night.png'
+import halikarnassosDayBackground from '../../../../assets/wonders/halikarnassos-day.png'
+import halikarnassosNightBackground from '../../../../assets/wonders/halikarnassos-night.png'
+import olympiaDayBackground from '../../../../assets/wonders/olympia-day.png'
+import olympiaNightBackground from '../../../../assets/wonders/olympia-night.png'
 import rhodesDayBackground from '../../../../assets/wonders/rhodes-day.png'
 import rhodesNightBackground from '../../../../assets/wonders/rhodes-night.png'
 import { CoinView } from '../core/card/Symbols'
@@ -85,4 +91,10 @@ const wonderSideImageNameToUrlDictionary: Record<string, string> = {
   'giza-night.png': gizaNightBackground,
   'rhodes-day.png': rhodesDayBackground,
   'rhodes-night.png': rhodesNightBackground,
+  'babylon-day.png': babylonDayBackground,
+  'babylon-night.png': babylonNightBackground,
+  'halikarnassos-day.png': halikarnassosDayBackground,
+  'halikarnassos-night.png': halikarnassosNightBackground,
+  'olympia-day.png': olympiaDayBackground,
+  'olympia-night.png': olympiaNightBackground,
 }

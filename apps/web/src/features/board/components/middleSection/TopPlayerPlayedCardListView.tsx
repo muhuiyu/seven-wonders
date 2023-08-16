@@ -6,7 +6,7 @@ interface Props {
   gameState: GameState
   userIndex: number
   topSectionPosition: number
-  onClickCard: (Card: AnyCard) => void
+  onClickCard: (CardId: AnyCard['id']) => void
   className?: string
 }
 
@@ -22,14 +22,16 @@ export default function TopPlayerPlayedCardListView({
   return (
     <div className={className} style={{ left: `${(topSectionPosition * 100) / (gameState.players.length - 1)}vw` }}>
       <div className="flex flex-col bg-black">
-        <InitialResourceView {...{ resource: userState.wonder.initialResource, symbolSize: 30 }} />
-        {userState.playedCards.map((card) => (
+        {userState.initialResource && (
+          <InitialResourceView {...{ resource: userState.initialResource, symbolSize: 32 }} />
+        )}
+        {userState.playedCards.map((cardId) => (
           <CardView
             isShowingName={true}
-            key={card.id}
-            {...{ card, isPreview: true }}
+            key={cardId}
+            {...{ cardId, isPreview: true }}
             onClick={() => {
-              onClickCard(card)
+              onClickCard(cardId)
             }}
           />
         ))}

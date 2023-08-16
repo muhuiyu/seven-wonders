@@ -1,11 +1,14 @@
 import classNames from 'classnames'
-import { GameState, Player, neighborIndexes } from 'seven-wonders-game'
-
 import { useState } from 'react'
+import { GameState, Player, neighborIndexes } from 'seven-wonders-game'
 import alexandriaDayBackgroundPreview from '../../../assets/wonders/alexandria-day-preview.png'
 import alexandriaDayBackground from '../../../assets/wonders/alexandria-day.png'
 import alexandriaNightBackgroundPreview from '../../../assets/wonders/alexandria-night-preview.png'
 import alexandriaNightBackground from '../../../assets/wonders/alexandria-night.png'
+import babylonDayBackgroundPreview from '../../../assets/wonders/babylon-day-preview.png'
+import babylonDayBackground from '../../../assets/wonders/babylon-day.png'
+import babylonNightBackgroundPreview from '../../../assets/wonders/babylon-night-preview.png'
+import babylonNightBackground from '../../../assets/wonders/babylon-night.png'
 import ephesusDayBackgroundPreview from '../../../assets/wonders/ephesus-day-preview.png'
 import ephesusDayBackground from '../../../assets/wonders/ephesus-day.png'
 import ephesusNightBackgroundPreview from '../../../assets/wonders/ephesus-night-preview.png'
@@ -14,10 +17,19 @@ import gizaDayBackgroundPreview from '../../../assets/wonders/giza-day-preview.p
 import gizaDayBackground from '../../../assets/wonders/giza-day.png'
 import gizaNightBackgroundPreview from '../../../assets/wonders/giza-night-preview.png'
 import gizaNightBackground from '../../../assets/wonders/giza-night.png'
+import halikarnassosDayBackgroundPreview from '../../../assets/wonders/halikarnassos-day-preview.png'
+import halikarnassosDayBackground from '../../../assets/wonders/halikarnassos-day.png'
+import halikarnassosNightBackgroundPreview from '../../../assets/wonders/halikarnassos-night-preview.png'
+import halikarnassosNightBackground from '../../../assets/wonders/halikarnassos-night.png'
+import olympiaDayBackgroundPreview from '../../../assets/wonders/olympia-day-preview.png'
+import olympiaDayBackground from '../../../assets/wonders/olympia-day.png'
+import olympiaNightBackgroundPreview from '../../../assets/wonders/olympia-night-preview.png'
+import olympiaNightBackground from '../../../assets/wonders/olympia-night.png'
 import rhodesDayBackgroundPreview from '../../../assets/wonders/rhodes-day-preview.png'
 import rhodesDayBackground from '../../../assets/wonders/rhodes-day.png'
 import rhodesNightBackgroundPreview from '../../../assets/wonders/rhodes-night-preview.png'
 import rhodesNightBackground from '../../../assets/wonders/rhodes-night.png'
+
 import { Button } from '../../common/components/Button'
 
 interface Props {
@@ -31,7 +43,6 @@ export default function ChooseWonderSideScreen({ gameState, onSelectWonderSide }
   const [sideIndex, setSideIndex] = useState(players[gameState.userIndex].wonderSideIndex)
   const [isShowingChangeSidePanel, setIsShowingChangeSidePanel] = useState(false)
   const centerIndex = Math.floor(players.length / 2)
-  console.log(players.length)
 
   const onClickCenter = () => {
     setIsShowingChangeSidePanel(true)
@@ -186,6 +197,8 @@ const wonderSideImageNameToUrlDictionary: Record<string, string> = {
   'giza-night.png': gizaNightBackground,
   'rhodes-day.png': rhodesDayBackground,
   'rhodes-night.png': rhodesNightBackground,
+  'babylon-day.png': babylonDayBackground,
+  'babylon-night.png': babylonNightBackground,
   'alexandria-day-preview.png': alexandriaDayBackgroundPreview,
   'alexandria-night-preview.png': alexandriaNightBackgroundPreview,
   'ephesus-day-preview.png': ephesusDayBackgroundPreview,
@@ -194,4 +207,14 @@ const wonderSideImageNameToUrlDictionary: Record<string, string> = {
   'giza-night-preview.png': gizaNightBackgroundPreview,
   'rhodes-day-preview.png': rhodesDayBackgroundPreview,
   'rhodes-night-preview.png': rhodesNightBackgroundPreview,
+  'babylon-day-preview.png': babylonDayBackgroundPreview,
+  'babylon-night-preview.png': babylonNightBackgroundPreview,
+  'halikarnassos-day.png': halikarnassosDayBackground,
+  'halikarnassos-night.png': halikarnassosNightBackground,
+  'halikarnassos-day-preview.png': halikarnassosDayBackgroundPreview,
+  'halikarnassos-night-preview.png': halikarnassosNightBackgroundPreview,
+  'olympia-day.png': olympiaDayBackground,
+  'olympia-night.png': olympiaNightBackground,
+  'olympia-day-preview.png': olympiaDayBackgroundPreview,
+  'olympia-night-preview.png': olympiaNightBackgroundPreview,
 }

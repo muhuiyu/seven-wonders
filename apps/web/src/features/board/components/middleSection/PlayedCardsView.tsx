@@ -1,12 +1,19 @@
 import { AnyCard, GameState, neighborIndexes } from 'seven-wonders-game'
 import alexandriaDayBackground from '../../../../assets/wonders/alexandria-day.png'
 import alexandriaNightBackground from '../../../../assets/wonders/alexandria-night.png'
+import babylonDayBackground from '../../../../assets/wonders/babylon-day.png'
+import babylonNightBackground from '../../../../assets/wonders/babylon-night.png'
 import ephesusDayBackground from '../../../../assets/wonders/ephesus-day.png'
 import ephesusNightBackground from '../../../../assets/wonders/ephesus-night.png'
 import gizaDayBackground from '../../../../assets/wonders/giza-day.png'
 import gizaNightBackground from '../../../../assets/wonders/giza-night.png'
+import halikarnassosDayBackground from '../../../../assets/wonders/halikarnassos-day.png'
+import halikarnassosNightBackground from '../../../../assets/wonders/halikarnassos-night.png'
+import olympiaDayBackground from '../../../../assets/wonders/olympia-day.png'
+import olympiaNightBackground from '../../../../assets/wonders/olympia-night.png'
 import rhodesDayBackground from '../../../../assets/wonders/rhodes-day.png'
 import rhodesNightBackground from '../../../../assets/wonders/rhodes-night.png'
+
 import CardView from '../core/card/CardView'
 import InitialResourceView from './InitialResourceView'
 import NeighborPlayedCardsView from './NeighborPlayedCardsView'
@@ -23,9 +30,9 @@ export default function PlayedCardsView({ gameState }: Props) {
   const currentPlayerWonderSide = currentPlayerState.wonder.sides[currentPlayerState.wonderSideIndex]
   const { leftIndex, rightIndex } = neighborIndexes(currentPlayerIndex, numberOfPlayers)
 
-  const onClickCard = (card: AnyCard) => {
-    // TODO:
-    console.log('user clicked card', card.id)
+  const onClickCard = (cardId: AnyCard['id']) => {
+    // TODO: show card details
+    console.log('user clicked card', cardId)
   }
 
   return (
@@ -46,14 +53,16 @@ export default function PlayedCardsView({ gameState }: Props) {
         <NeighborPlayedCardsView className="flex h-full" {...{ gameState, userIndex: leftIndex, onClickCard }} />
         <div className="flex flex-1 flex-col p-4">
           <div className="flex flex-row items-start">
-            <InitialResourceView {...{ resource: currentPlayerState.wonder.initialResource, symbolSize: 32 }} />
+            {currentPlayerState.initialResource && (
+              <InitialResourceView {...{ resource: currentPlayerState.initialResource, symbolSize: 32 }} />
+            )}
             <div>
-              {currentPlayerState.playedCards.map((card) => (
+              {currentPlayerState.playedCards.map((cardId) => (
                 <CardView
-                  key={card.id}
-                  {...{ card, isPreview: true }}
+                  key={cardId}
+                  {...{ cardId, isPreview: true }}
                   onClick={() => {
-                    onClickCard(card)
+                    onClickCard(cardId)
                   }}
                 />
               ))}
@@ -75,4 +84,10 @@ const wonderSideImageNameToUrlDictionary: Record<string, string> = {
   'giza-night.png': gizaNightBackground,
   'rhodes-day.png': rhodesDayBackground,
   'rhodes-night.png': rhodesNightBackground,
+  'babylon-day.png': babylonDayBackground,
+  'babylon-night.png': babylonNightBackground,
+  'halikarnassos-day.png': halikarnassosDayBackground,
+  'halikarnassos-night.png': halikarnassosNightBackground,
+  'olympia-day.png': olympiaDayBackground,
+  'olympia-night.png': olympiaNightBackground,
 }

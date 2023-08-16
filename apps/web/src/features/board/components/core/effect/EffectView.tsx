@@ -1,19 +1,10 @@
 import classNames from 'classnames'
 import _ from 'lodash'
+import { AnyCard, CardCategory, Effect, ResourceType, SingleEffect, Target, ViewItem } from 'seven-wonders-game'
 import {
-  AnyCard,
-  BaseEffect,
-  CardCategory,
-  Effect,
-  ResourceTypes,
-  TransactionDiscountEffect,
-  isBaseEffect,
-  isMultipleBaseEffects,
-  isOneOfBaseEffects,
-  isTransactionDiscountEffect,
-  isWildcardScience,
-} from 'seven-wonders-game'
-import {
+  AgeOneVictoryTokenView,
+  AgeThreeVictoryTokenView,
+  AgeTwoVictoryTokenView,
   ArenaView,
   BazarView,
   BuildersGuildView,
@@ -22,14 +13,18 @@ import {
   CoinView,
   CompassView,
   DecoratorsGuildView,
+  DiplomacyView,
+  DiscardPileView,
   GearView,
   GlassView,
   HavenView,
+  HiramView,
   LighthouseView,
   LoomView,
   LudusView,
   OreView,
   PapyrusView,
+  PlayLastCardView,
   PointPerCivilianStructuresView,
   PointPerCommercialStructuresView,
   PointPerGuildsView,
@@ -38,6 +33,7 @@ import {
   PointPerRawMaterialsView,
   PointPerScientificStructuresView,
   PointView,
+  ScienceCopyView,
   SeparatorView,
   ShieldView,
   StoneView,
@@ -102,6 +98,8 @@ const renderEffectViewByCardId = (symbolSize: number, cardId?: AnyCard['id']) =>
     return renderPointPerFromNeighborGuildView('militaryStructures', symbolSize)
   } else if (cardId === 'magistratesGuild') {
     return renderPointPerFromNeighborGuildView('civilianStructures', symbolSize)
+  } else if (cardId === 'hiram') {
+    return <HiramView size={symbolSize} />
   } else if (cardId === 'decoratorsGuild') {
     return <DecoratorsGuildView size={symbolSize} />
   } else if (cardId === 'buildersGuild') {
@@ -125,65 +123,128 @@ const renderEffectViewByCardId = (symbolSize: number, cardId?: AnyCard['id']) =>
   }
 }
 
-const renderEffectItems = (effect: Effect, defaultSymbolSize: number) => {
-  if (isTransactionDiscountEffect(effect)) {
-    return renderTransactionDiscountEffect(effect, defaultSymbolSize)
-  } else if (isBaseEffect(effect)) {
-    return renderSingleEffect(effect, defaultSymbolSize, 0)
-  } else if (isMultipleBaseEffects(effect)) {
-    const symbolSize = effect.length > 2 ? defaultSymbolSize * 0.75 : defaultSymbolSize
-    return (
-      <div className="flex flex-row justify-center">
-        {effect.map((item, index) => renderSingleEffect(item, symbolSize, index))}
-      </div>
-    )
-  } else if (isOneOfBaseEffects(effect)) {
-    let symbolSize = defaultSymbolSize
-    switch (effect.oneOf.length) {
-      case 3:
-        symbolSize = defaultSymbolSize * 0.75
-        break
-      case 4:
-        symbolSize = defaultSymbolSize * 0.6
-        break
-    }
-
+const renderEffectItems = (effect: Effect, defaultSymbolSize: number): JSX.Element[] => {
+  if (Array.isArray(effect)) {
     let views: JSX.Element[] = []
-    effect.oneOf.forEach((item, index) => {
-      const view = renderSingleEffect(item, symbolSize, index)
-      if (view) {
-        if (Array.isArray(view)) {
-          views = [...views, ...view]
-        } else {
-          views.push(view)
-        }
-      }
-      if (index < effect.oneOf.length - 1) {
-        views.push(<SeparatorView key={index} size={symbolSize} />)
-      }
+    effect.forEach((singleEffect) => {
+      views = [...views, ...renderSingleEffectItems(singleEffect, defaultSymbolSize)]
     })
-
-    return <div className="flex flex-row justify-center">{views}</div>
-  } else if (isWildcardScience(effect)) {
-    return <div>wildcardscience</div>
+    return views
   } else {
-    return <div>?</div>
+    return renderSingleEffectItems(effect, defaultSymbolSize)
   }
 }
 
-function renderTransactionDiscountEffect(transactionDiscount: TransactionDiscountEffect, symbolSize: number) {
+const renderSingleEffectItems = (effect: SingleEffect, defaultSymbolSize: number): JSX.Element[] => {
+  const updatedSymbolSize =
+    effect.views.length > 5
+      ? defaultSymbolSize * 0.55
+      : effect.views.length > 3
+      ? defaultSymbolSize * 0.7
+      : defaultSymbolSize
+  return effect.views.map((item, index) => {
+    const effectPoints = points(item)
+    const effectCoins = coins(item)
+
+    if (typeof item === 'object') {
+      if (effectPoints) {
+        return <PointView key={`point-${effectPoints}`} amount={effectPoints} size={updatedSymbolSize} />
+      } else if (effectCoins) {
+        return <CoinView key={`coin-${effectCoins}`} amount={effectCoins} size={updatedSymbolSize} />
+      } else if ('amount' in item && 'resources' in item && 'from' in item) {
+        // TransactionDiscount
+        return renderTransactionDiscountEffect(
+          { types: item.resources, from: item.from, amount: item.amount },
+          updatedSymbolSize,
+        )
+      }
+    }
+
+    switch (item) {
+      case 'wood':
+        return <WoodView key={`wood-${index}`} size={updatedSymbolSize} />
+      case 'clay':
+        return <ClayView key={`clay-${index}`} size={updatedSymbolSize} />
+      case 'stone':
+        return <StoneView key={`stone-${index}`} size={updatedSymbolSize} />
+      case 'ore':
+        return <OreView key={`ore-${index}`} size={updatedSymbolSize} />
+      case 'glass':
+        return <GlassView key={`glass-${index}`} size={updatedSymbolSize} />
+      case 'loom':
+        return <LoomView key={`loom-${index}`} size={updatedSymbolSize} />
+      case 'papyrus':
+        return <PapyrusView key={`papyrus-${index}`} size={updatedSymbolSize} />
+      case 'shield':
+        return <ShieldView key={`shield-${index}`} size={updatedSymbolSize} />
+      case '/':
+        return <SeparatorView key={`separator-${index}`} size={updatedSymbolSize} />
+      case 'maths':
+        return <CompassView key={`maths-${index}`} size={updatedSymbolSize} />
+      case 'engineering':
+        return <GearView key={`engineering-${index}`} size={updatedSymbolSize} />
+      case 'writing':
+        return <TabletView key={`writing-${index}`} size={updatedSymbolSize} />
+      case 'copyScience':
+        return <ScienceCopyView key={`copyScience-${index}`} size={updatedSymbolSize} />
+      case 'A':
+        return <CoinView key={`coin-A-${index}`} amount={'A'} size={updatedSymbolSize} />
+      case 'diplomacy':
+        return <DiplomacyView key={`diplomacy-${index}`} size={updatedSymbolSize} />
+      case 'ageOneVictoryToken':
+        return <AgeOneVictoryTokenView key={`ageOneVictoryToken-${index}`} size={updatedSymbolSize} />
+      case 'ageTwoVictoryToken':
+        return <AgeTwoVictoryTokenView key={`ageTwoVictoryToken-${index}`} size={updatedSymbolSize} />
+      case 'ageThreeVictoryToken':
+        return <AgeThreeVictoryTokenView key={`ageThreeVictoryToken-${index}`} size={updatedSymbolSize} />
+      case 'discardPile':
+        return <DiscardPileView key={`discardPile-${index}`} size={updatedSymbolSize} />
+      case 'playLastHand':
+        return <PlayLastCardView key={`playLastHand-${index}`} size={updatedSymbolSize} />
+      default:
+        return <div key={`-${index}`}></div>
+    }
+  })
+}
+
+function points(item: ViewItem): number | undefined {
+  if (typeof item === 'object' && 'type' in item && 'value' in item && item.type === 'point') {
+    return item.value
+  }
+  return undefined
+}
+
+function coins(item: ViewItem): number | undefined {
+  if (typeof item === 'object' && 'type' in item && 'value' in item && item.type === 'coin') {
+    return item.value
+  }
+  return undefined
+}
+
+function renderTransactionDiscountEffect(
+  {
+    types,
+    from,
+    amount,
+  }: {
+    types: ResourceType[] | 'totalTransaction' | 'initialResource'
+    from: Target[]
+    amount: number
+  },
+  symbolSize: number,
+) {
   return (
     <div className="flex flex-col items-center">
-      <CoinView amount={transactionDiscount.amount} size={symbolSize * 0.5} />
+      <CoinView amount={amount} size={symbolSize * 0.5} />
 
       <div className="flex flex-row">
-        {_.includes(transactionDiscount.from, 'leftNeighbor') && (
+        {_.includes(from, 'leftNeighbor') && (
           <div className="text-sm text-white" style={{ textShadow: '1px 1px 1px black' }}>
             ◀
           </div>
         )}
-        {typeof transactionDiscount.types === 'object' &&
-          transactionDiscount.types.map((type, index) => {
+        {typeof types === 'object' &&
+          types.map((type, index) => {
             switch (type) {
               case 'wood':
                 return <WoodView key={index} size={symbolSize * 0.5} />
@@ -201,13 +262,9 @@ function renderTransactionDiscountEffect(transactionDiscount: TransactionDiscoun
                 return <PapyrusView key={index} size={symbolSize * 0.5} />
             }
           })}
-        {typeof transactionDiscount.types === 'string' && transactionDiscount.types === 'totalTransaction' && (
-          <CoinView amount={transactionDiscount.amount} size={symbolSize} />
-        )}
-        {typeof transactionDiscount.types === 'string' && transactionDiscount.types === 'initialResource' && (
-          <div>IR</div>
-        )}
-        {_.includes(transactionDiscount.from, 'rightNeighbor') && (
+        {typeof types === 'string' && types === 'totalTransaction' && <CoinView amount={amount} size={symbolSize} />}
+        {typeof types === 'string' && types === 'initialResource' && <div>IR</div>}
+        {_.includes(from, 'rightNeighbor') && (
           <div className="text-sm text-white" style={{ textShadow: '-1px 1px 1px black' }}>
             ▶
           </div>
@@ -215,99 +272,6 @@ function renderTransactionDiscountEffect(transactionDiscount: TransactionDiscoun
       </div>
     </div>
   )
-}
-
-function renderSingleEffect(effect: BaseEffect, symbolSize: number, viewIndex: number) {
-  for (const resource of ResourceTypes) {
-    if (!effect[resource]) continue
-    switch (resource) {
-      case 'coin':
-        return <CoinView key={`coin-${viewIndex}`} amount={effect.coin!} size={symbolSize} />
-      case 'wood':
-        return [...Array(effect.wood!)].map((_, index) => <WoodView key={`wood-${index}`} size={symbolSize} />)
-      case 'stone':
-        return [...Array(effect.stone!)].map((_, index) => <StoneView key={`stone-${index}`} size={symbolSize} />)
-      case 'clay':
-        return [...Array(effect.clay!)].map((_, index) => <ClayView key={`clay-${index}`} size={symbolSize} />)
-      case 'ore':
-        return [...Array(effect.ore!)].map((_, index) => <OreView key={`ore-${index}`} size={symbolSize} />)
-      case 'glass':
-        return [...Array(effect.glass!)].map((_, index) => <GlassView key={`glass-${index}`} size={symbolSize} />)
-      case 'loom':
-        return [...Array(effect.loom!)].map((_, index) => <LoomView key={`loom-${index}`} size={symbolSize} />)
-      case 'papyrus':
-        return [...Array(effect.papyrus!)].map((_, index) => <PapyrusView key={`papyrus-${index}`} size={symbolSize} />)
-    }
-  }
-  if (effect.point) {
-    return <PointView key={`point-${viewIndex}`} amount={effect.point} size={symbolSize} />
-  } else if (effect.shield) {
-    if (effect.shield > 3) {
-      // need to go second line
-      return (
-        <div key={viewIndex} className="flex flex-row justify-center">
-          {[...Array(effect.ore!)].map((_, index) => (
-            <ShieldView key={index} size={symbolSize * 0.7} />
-          ))}
-        </div>
-      )
-    } else {
-      return (
-        <div key={`shield-${viewIndex}`} className="flex flex-row justify-center">
-          {Array(effect.shield)
-            .fill(null)
-            .map((_, index) => (
-              <ShieldView key={index} size={symbolSize} />
-            ))}
-        </div>
-      )
-    }
-  } else if (effect.scienceMaths) {
-    return <CompassView key={viewIndex} size={symbolSize} />
-  } else if (effect.scienceEngineering) {
-    return <GearView key={viewIndex} size={symbolSize} />
-  } else if (effect.scienceWriting) {
-    return <TabletView key={viewIndex} size={symbolSize} />
-  } else if (effect.monetaryLoss) {
-    return <div key={viewIndex}>-{effect.monetaryLoss.multiplier}</div>
-  } else if (effect.pointPer) {
-    return (
-      <div key={viewIndex}>
-        {effect.pointPer.multiplier} p for per {effect.pointPer.countable} from{' '}
-        {effect.pointPer.from
-          .map((target) => {
-            switch (target) {
-              case 'leftNeighbor':
-                return '<'
-              case 'rightNeighbor':
-                return '>'
-              case 'self':
-                '^'
-            }
-          })
-          .join(', ')}
-      </div>
-    )
-  } else if (effect.coinPer) {
-    return (
-      <div key={viewIndex}>
-        {effect.coinPer.multiplier} $ for per {effect.coinPer.countable} from{' '}
-        {effect.coinPer.from
-          .map((target) => {
-            switch (target) {
-              case 'leftNeighbor':
-                return '<'
-              case 'rightNeighbor':
-                return '>'
-              case 'self':
-                '^'
-            }
-          })
-          .join(', ')}
-      </div>
-    )
-  }
-  return null
 }
 
 const renderPointPerFromNeighborGuildView = (category: CardCategory, symbolSize: number) => {

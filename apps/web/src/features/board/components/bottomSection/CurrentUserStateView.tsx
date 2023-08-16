@@ -1,22 +1,19 @@
 import { AnyCard, GameState } from 'seven-wonders-game'
 import WonderStagesView from '../core/wonder/WonderStagesView'
-import HandCardsView from './HandCardsView'
+import HandcardsView from './HandCardsView'
 import TotalCoinsView from './TotalCoinsView'
 import TotalShieldsView from './TotalShieldsView'
 
 interface Props {
   gameState: GameState
-  selectedCard: AnyCard | undefined
-  onClickCard(card: AnyCard): void
+  selectedCardId: AnyCard['id'] | undefined
+  onClickCard(cardId: AnyCard['id']): void
 }
 
-export default function CurrentUserStateView({ gameState, selectedCard, onClickCard }: Props) {
+export default function CurrentUserStateView({ gameState, selectedCardId, onClickCard }: Props) {
   const currentUserIndex = gameState.userIndex
   const currentUserState = gameState.players[currentUserIndex]
   const wonderSide = currentUserState.wonder.sides[currentUserState.wonderSideIndex]
-
-  console.log(currentUserState.possession)
-  console.log(gameState.handCards)
 
   return (
     <div className="flex flex-col items-center gap-y-2">
@@ -29,7 +26,7 @@ export default function CurrentUserStateView({ gameState, selectedCard, onClickC
         <TotalCoinsView {...{ numberOfCoins: currentUserState.possession.resource.coin ?? 0, symbolSize: 54 }} />
       </div>
       {/* hand cards */}
-      <HandCardsView {...{ cards: gameState.handCards, onSelectCard: onClickCard, selectedCard: selectedCard }} />
+      <HandcardsView {...{ cardIds: gameState.handcards, onClickCard, selectedCardId }} />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { AnyCard, Resource, WonderStage } from 'seven-wonders-game'
-import { getCostItemViews } from '../card/CardCostView'
+import { RequirementView } from '../common/RequirementView'
+import { getResource } from '../common/requirementUtils'
 import EffectView from '../effect/EffectView'
 
 interface Props {
@@ -36,7 +37,9 @@ export default function WonderStagesView({ stages, builtStages, viewType }: Prop
               {...{ effect: stage.effect, symbolSize: viewType === 'preview' ? 24 : 40 }}
             />
           )}
-          {viewType === 'currentUser' && !hasBuilt(stage.id) && <StageCostView {...{ cost: stage.cost }} />}
+          {viewType === 'currentUser' && !hasBuilt(stage.id) && stage.requirement && getResource(stage.requirement) && (
+            <StageCostView {...{ cost: getResource(stage.requirement)! }} />
+          )}
         </div>
       ))}
     </div>
@@ -48,7 +51,7 @@ const StageCostView = ({ cost }: { cost: Resource }) => {
   const symbolSize = 20
   return (
     <div className="flex flex-col flex-wrap items-center justify-start border-l pl-1" style={{ width: 48, height: 40 }}>
-      {getCostItemViews(cost, symbolSize)}
+      <RequirementView {...{ cost, symbolSize }} />
     </div>
   )
 }

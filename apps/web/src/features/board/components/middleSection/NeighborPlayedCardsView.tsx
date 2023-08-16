@@ -5,7 +5,7 @@ import InitialResourceView from './InitialResourceView'
 interface Props {
   gameState: GameState
   userIndex: number
-  onClickCard: (Card: AnyCard) => void
+  onClickCard: (cardId: AnyCard['id']) => void
   className?: string
 }
 
@@ -16,13 +16,15 @@ export default function NeighborPlayedCardsView({ gameState, userIndex, onClickC
     <div className={className}>
       <div className="flex flex-col" style={{ width: 240 }}>
         <div className="flex flex-row flex-wrap">
-          <InitialResourceView {...{ resource: userState.wonder.initialResource, symbolSize: 30 }} />
-          {userState.playedCards.map((card) => (
+          {userState.initialResource && (
+            <InitialResourceView {...{ resource: userState.initialResource, symbolSize: 32 }} />
+          )}
+          {userState.playedCards.map((cardId) => (
             <CardView
-              key={card.id}
-              {...{ card, isPreview: true }}
+              key={cardId}
+              {...{ cardId, isPreview: true }}
               onClick={() => {
-                onClickCard(card)
+                onClickCard(cardId)
               }}
             />
           ))}

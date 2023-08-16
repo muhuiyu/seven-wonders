@@ -1,15 +1,19 @@
 import classNames from 'classnames'
 import _ from 'lodash'
-import { AnyCard, PlayerMove, PlayerMoveType } from 'seven-wonders-game'
+import { AnyCard, PlayerMove, PlayerMoveType, findCard } from 'seven-wonders-game'
 
 interface Props {
   legalMoves: PlayerMove[]
-  card: AnyCard
+  cardId: AnyCard['id']
   onClickMoveType(moveType: PlayerMoveType): void
   onClickCancel(): void
 }
 
-export default function ChooseMoveModal({ legalMoves, card, onClickMoveType, onClickCancel }: Props) {
+export default function ChooseMoveModal({ legalMoves, cardId, onClickMoveType, onClickCancel }: Props) {
+  const card = findCard(cardId)
+  if (!card) {
+    return null
+  }
   return (
     <div className="absolute flex flex-col items-center bg-red-500 px-10 py-4">
       <h3 className="text-lg font-bold">Choose action</h3>

@@ -1,3 +1,6 @@
+import ageOneVictoryToken from '../../../../../assets/symbols/ageOneVictoryToken.png'
+import ageThreeVictoryToken from '../../../../../assets/symbols/ageThreeVictoryToken.png'
+import ageTwoVictoryToken from '../../../../../assets/symbols/ageTwoVictoryToken.png'
 import arena from '../../../../../assets/symbols/arena.png'
 import bazar from '../../../../../assets/symbols/bazar.png'
 import buildersGuild from '../../../../../assets/symbols/buildersGuild.png'
@@ -5,6 +8,9 @@ import chamberOfCommerce from '../../../../../assets/symbols/chamberOfCommerce.p
 import clay from '../../../../../assets/symbols/clay.png'
 import compass from '../../../../../assets/symbols/compass.png'
 import decoratorsGuild from '../../../../../assets/symbols/decoratorsGuild.png'
+import defeatToken from '../../../../../assets/symbols/defeatToken.png'
+import diplomacy from '../../../../../assets/symbols/diplomacy.png'
+import discardPile from '../../../../../assets/symbols/discardPile.png'
 import gear from '../../../../../assets/symbols/gear.png'
 import glass from '../../../../../assets/symbols/glass.png'
 import haven from '../../../../../assets/symbols/haven.png'
@@ -13,6 +19,7 @@ import loom from '../../../../../assets/symbols/loom.png'
 import ludus from '../../../../../assets/symbols/ludus.png'
 import ore from '../../../../../assets/symbols/ore.png'
 import papyrus from '../../../../../assets/symbols/papyrus.png'
+import playLastCard from '../../../../../assets/symbols/playLastCard.png'
 import point1 from '../../../../../assets/symbols/point-1.png'
 import point2 from '../../../../../assets/symbols/point-2.png'
 import point3 from '../../../../../assets/symbols/point-3.png'
@@ -28,16 +35,21 @@ import pointPerManufacturedGoods from '../../../../../assets/symbols/pointPerMan
 import pointPerMilitary from '../../../../../assets/symbols/pointPerMilitary.png'
 import pointPerRawMaterials from '../../../../../assets/symbols/pointPerRawMaterials.png'
 import pointPerScientificStructures from '../../../../../assets/symbols/pointPerScientificStructures.png'
+import pointPerThreeCoins from '../../../../../assets/symbols/pointPerThreeCoins.png'
 import scienceCopy from '../../../../../assets/symbols/scienceCopy.png'
 import separator from '../../../../../assets/symbols/separator.png'
 import shield from '../../../../../assets/symbols/shield.png'
 import stone from '../../../../../assets/symbols/stone.png'
 import tablet from '../../../../../assets/symbols/tablet.png'
+import twoPointPerGuilds from '../../../../../assets/symbols/twoPointPerGuilds.png'
 import twoPointPerManufacturedGoods from '../../../../../assets/symbols/twoPointPerManufacturedGoods.png'
 import vineyard from '../../../../../assets/symbols/vineyard.png'
 import wood from '../../../../../assets/symbols/wood.png'
 
-export const CoinView = ({ amount, size }: { amount: number; size: number }) => {
+// -------------------------------------------------------------------------------------------
+// RESOURCES
+// -------------------------------------------------------------------------------------------
+export const CoinView = ({ amount, size }: { amount: number | string; size: number }) => {
   return (
     <div
       className="flex items-center justify-center rounded-full border border-black bg-yellow-500"
@@ -93,6 +105,26 @@ export const ShieldView = ({ size }: { size: number }) => {
   return <img src={shield} style={{ height: size, width: size }} />
 }
 
+export const DefeatTokenView = ({ size }: { size: number }) => {
+  return <img src={defeatToken} style={{ height: size, width: size }} />
+}
+
+export const AgeOneVictoryTokenView = ({ size }: { size: number }) => {
+  return <img src={ageOneVictoryToken} style={{ height: size, width: size }} />
+}
+
+export const AgeTwoVictoryTokenView = ({ size }: { size: number }) => {
+  return <img src={ageTwoVictoryToken} style={{ height: size, width: size }} />
+}
+
+export const AgeThreeVictoryTokenView = ({ size }: { size: number }) => {
+  return <img src={ageThreeVictoryToken} style={{ height: size, width: size }} />
+}
+
+export const DiplomacyView = ({ size }: { size: number }) => {
+  return <img src={diplomacy} style={{ height: size, width: size }} />
+}
+
 export const TabletView = ({ size }: { size: number }) => {
   return <img src={tablet} style={{ height: size, width: size }} />
 }
@@ -121,6 +153,60 @@ export const SeparatorView = ({ size }: { size: number }) => {
   return <img src={separator} style={{ height: size, width: size * 0.45 }} />
 }
 
+export const DiscardPileView = ({ size }: { size: number }) => {
+  return <img src={discardPile} style={{ height: size, width: size * 1.5 }} />
+}
+
+export const PlayLastCardView = ({ size }: { size: number }) => {
+  return <img src={playLastCard} style={{ height: size, width: size * 1.5 }} />
+}
+
+// -------------------------------------------------------------------------------------------
+// POINT PER
+// -------------------------------------------------------------------------------------------
+export const PointPerThreeCoinsView = ({ size }: { size: number }) => {
+  return <img src={pointPerThreeCoins} style={{ height: size, width: size }} />
+}
+
+export const PointPerRawMaterialsView = ({ size }: { size: number }) => {
+  return <img src={pointPerRawMaterials} style={{ height: size, width: size }} />
+}
+
+export const PointPerManufacturedGoodsView = ({ size }: { size: number }) => {
+  return <img src={pointPerManufacturedGoods} style={{ height: size, width: size }} />
+}
+
+export const TwoPointPerManufacturedGoodsView = ({ size }: { size: number }) => {
+  return <img src={twoPointPerManufacturedGoods} style={{ height: size, width: size }} />
+}
+
+export const PointPerGuildsView = ({ size }: { size: number }) => {
+  return <img src={pointPerGuilds} style={{ height: size, width: size }} />
+}
+
+export const TwoPointPerGuildsView = ({ size }: { size: number }) => {
+  return <img src={twoPointPerGuilds} style={{ height: size, width: size }} />
+}
+
+export const PointPerMilitaryView = ({ size }: { size: number }) => {
+  return <img src={pointPerMilitary} style={{ height: size, width: size }} />
+}
+
+export const PointPerScientificStructuresView = ({ size }: { size: number }) => {
+  return <img src={pointPerScientificStructures} style={{ height: size, width: size }} />
+}
+
+export const PointPerCommercialStructuresView = ({ size }: { size: number }) => {
+  return <img src={pointPerCommercialStructures} style={{ height: size, width: size }} />
+}
+
+export const PointPerCivilianStructuresView = ({ size }: { size: number }) => {
+  return <img src={pointPerCivilianStructures} style={{ height: size, width: size }} />
+}
+
+// -------------------------------------------------------------------------------------------
+// SPECIAL CARDS
+// -------------------------------------------------------------------------------------------
 export const ArenaView = ({ size }: { size: number }) => {
   return <img src={arena} style={{ height: size, width: size * 1.5 }} />
 }
@@ -145,38 +231,6 @@ export const LudusView = ({ size }: { size: number }) => {
   return <img src={ludus} style={{ height: size, width: size * 1.5 }} />
 }
 
-export const PointPerRawMaterialsView = ({ size }: { size: number }) => {
-  return <img src={pointPerRawMaterials} style={{ height: size, width: size }} />
-}
-
-export const PointPerManufacturedGoodsView = ({ size }: { size: number }) => {
-  return <img src={pointPerManufacturedGoods} style={{ height: size, width: size }} />
-}
-
-export const TwoPointPerManufacturedGoodsView = ({ size }: { size: number }) => {
-  return <img src={twoPointPerManufacturedGoods} style={{ height: size, width: size }} />
-}
-
-export const PointPerGuildsView = ({ size }: { size: number }) => {
-  return <img src={pointPerGuilds} style={{ height: size, width: size }} />
-}
-
-export const PointPerMilitaryView = ({ size }: { size: number }) => {
-  return <img src={pointPerMilitary} style={{ height: size, width: size }} />
-}
-
-export const PointPerScientificStructuresView = ({ size }: { size: number }) => {
-  return <img src={pointPerScientificStructures} style={{ height: size, width: size }} />
-}
-
-export const PointPerCommercialStructuresView = ({ size }: { size: number }) => {
-  return <img src={pointPerCommercialStructures} style={{ height: size, width: size }} />
-}
-
-export const PointPerCivilianStructuresView = ({ size }: { size: number }) => {
-  return <img src={pointPerCivilianStructures} style={{ height: size, width: size }} />
-}
-
 export const BuildersGuildView = ({ size }: { size: number }) => {
   return <img src={buildersGuild} style={{ height: size, width: size * 1.9 }} />
 }
@@ -191,4 +245,8 @@ export const VineyardView = ({ size }: { size: number }) => {
 
 export const DecoratorsGuildView = ({ size }: { size: number }) => {
   return <img src={decoratorsGuild} style={{ height: size, width: size * 1.5 }} />
+}
+
+export const HiramView = ({ size }: { size: number }) => {
+  return <img src={twoPointPerGuilds} style={{ height: size, width: size * 1.5 }} />
 }

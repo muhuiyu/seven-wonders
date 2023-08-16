@@ -1,10 +1,16 @@
-import { GameState, Player } from 'seven-wonders-game'
+import { GameState, VictoryPoints } from 'seven-wonders-game'
 import alexandriaDayBackground from '../../../assets/wonders/alexandria-day.png'
 import alexandriaNightBackground from '../../../assets/wonders/alexandria-night.png'
+import babylonDayBackground from '../../../assets/wonders/babylon-day.png'
+import babylonNightBackground from '../../../assets/wonders/babylon-night.png'
 import ephesusDayBackground from '../../../assets/wonders/ephesus-day.png'
 import ephesusNightBackground from '../../../assets/wonders/ephesus-night.png'
 import gizaDayBackground from '../../../assets/wonders/giza-day.png'
 import gizaNightBackground from '../../../assets/wonders/giza-night.png'
+import halikarnassosDayBackground from '../../../assets/wonders/halikarnassos-day.png'
+import halikarnassosNightBackground from '../../../assets/wonders/halikarnassos-night.png'
+import olympiaDayBackground from '../../../assets/wonders/olympia-day.png'
+import olympiaNightBackground from '../../../assets/wonders/olympia-night.png'
 import rhodesDayBackground from '../../../assets/wonders/rhodes-day.png'
 import rhodesNightBackground from '../../../assets/wonders/rhodes-night.png'
 import { CoinView } from '../../board/components/core/card/Symbols'
@@ -16,8 +22,7 @@ interface Props {
 }
 
 export default function LeaderBoardView({ onClickActionButton, gameState, buttonTitle }: Props) {
-  const allPoints = (player: Player) => {
-    const points = player.victoryPoints
+  const allPoints = (points: VictoryPoints) => {
     return (
       points.military +
       points.coin +
@@ -47,44 +52,45 @@ export default function LeaderBoardView({ onClickActionButton, gameState, button
     >
       <div className="absolute h-full w-full bg-black opacity-50"></div>
       <div className="relative flex flex-col gap-y-1 bg-yellow-200">
-        {gameState.players
-          .sort((a, b) => allPoints(b) - allPoints(a))
-          .map((player) => (
-            <div className="flex flex-row gap-x-1" key={player.id}>
+        {gameState.currentPoints
+          .map((points, index) => ({ playerIndex: index, points: points }))
+          .sort((a, b) => allPoints(b.points) - allPoints(a.points))
+          .map(({ playerIndex, points }) => (
+            <div className="flex flex-row gap-x-1" key={playerIndex}>
               <div className="flex w-[240px] flex-col items-center justify-center bg-teal-900">
-                <h2 className="text-xl font-bold text-white">{player.name}</h2>
-                <div className="text-sm font-medium text-white">{player.wonder.shortName}</div>
+                <h2 className="text-xl font-bold text-white">{gameState.players[playerIndex].name}</h2>
+                <div className="text-sm font-medium text-white">{gameState.players[playerIndex].wonder.shortName}</div>
               </div>
               <div className="w-[80px] border-b-8 border-red-600 bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.military}
+                {points.military}
               </div>
               <div className="flex w-[80px] items-center justify-center border-b-8 border-amber-500  bg-teal-900">
-                <CoinView amount={player.victoryPoints.coin} size={42} />
+                <CoinView amount={points.coin} size={42} />
               </div>
               <div className="w-[80px] border-b-8 border-amber-600 bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.wonderStages}
+                {points.wonderStages}
                 {/* <FontAwesomeIcon icon={faTriangleExclamation} /> */}
               </div>
               <div className="w-[80px] border-b-8 border-blue-600 bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.civilianStructures}
+                {points.civilianStructures}
               </div>
               <div className="w-[80px] border-b-8 border-yellow-500 bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.commercialStructures}
+                {points.commercialStructures}
               </div>
               <div className="w-[80px] border-b-8 border-purple-600 bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.guilds}
+                {points.guilds}
               </div>
               <div className="w-[80px] border-b-8 border-green-600 bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.scientificStructures}
+                {points.scientificStructures}
               </div>
               <div className="w-[80px] border-b-8 border-white bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.leaders}
+                {points.leaders}
               </div>
               <div className="w-[80px] border-b-8 border-black bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {player.victoryPoints.cities}
+                {points.cities}
               </div>
               <div className="w-[80px] border-b-8 border-orange-600 bg-teal-900 pb-3 pt-4 text-center text-3xl font-bold text-white">
-                {allPoints(player)}
+                {allPoints(points)}
               </div>
             </div>
           ))}
@@ -108,4 +114,10 @@ const wonderSideImageNameToUrlDictionary: Record<string, string> = {
   'giza-night.png': gizaNightBackground,
   'rhodes-day.png': rhodesDayBackground,
   'rhodes-night.png': rhodesNightBackground,
+  'babylon-day.png': babylonDayBackground,
+  'babylon-night.png': babylonNightBackground,
+  'halikarnassos-day.png': halikarnassosDayBackground,
+  'halikarnassos-night.png': halikarnassosNightBackground,
+  'olympia-day.png': olympiaDayBackground,
+  'olympia-night.png': olympiaNightBackground,
 }

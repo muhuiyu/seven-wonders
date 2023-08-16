@@ -6,15 +6,15 @@ import CurrentUserStateView from './CurrentUserStateView'
 
 interface Props {
   gameState: GameState
-  selectedCard: AnyCard | undefined
+  selectedCardId: AnyCard['id'] | undefined
   onClickSettings(): void
   onClickLeaderboard(): void
-  onClickCard(card: AnyCard): void
+  onClickCard(cardId: AnyCard['id']): void
 }
 
 export default function CurrentPlayerActionView({
   gameState,
-  selectedCard,
+  selectedCardId,
   onClickSettings,
   onClickLeaderboard,
   onClickCard,
@@ -24,7 +24,7 @@ export default function CurrentPlayerActionView({
       {/* settings */}
       <SettingsView numberOfDiscardedCards={gameState.discardedCards.length} onClickSettings={onClickSettings} />
       {/* current player */}
-      <CurrentUserStateView {...{ gameState, selectedCard, onClickCard }} />
+      <CurrentUserStateView {...{ gameState, selectedCardId, onClickCard }} />
       {/* scores */}
       <LeaderboardView currentPhase={gameState.phase} onClickLeaderboard={onClickLeaderboard} />
     </div>
@@ -69,7 +69,7 @@ const LeaderboardView = ({
 }) => {
   let currentPhaseText = ''
   switch (currentPhase) {
-    case 'leaders':
+    case 'getLeaders':
       currentPhaseText = 'L'
       break
     case 'age1':

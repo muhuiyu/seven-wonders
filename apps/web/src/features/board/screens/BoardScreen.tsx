@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
-  const [selectedCard, setSelectedCard] = useState<AnyCard | undefined>(undefined)
+  const [selectedCardId, setSelectedCardId] = useState<AnyCard['id'] | undefined>(undefined)
   const [isShowingChooseActionModal, setIsShowingChooseActionModal] = useState(false)
   const [isShowingAdjustTransactionModal, setIsShowingAdjustTransactionModal] = useState(false)
   const [legalMoveCandidates, setLegalMoveCandidates] = useState<PlayerMove[]>([])
@@ -42,26 +42,26 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
   })
 
   const onClickOtherPlayerPlayedCard = (card: AnyCard) => {
-    // TODO:
+    // TODO: show card description
     console.log('clicked on other player played card', card.id, 'mouse position is', mousePosition)
     setIsShowingCardDescriptionView(!isShowingCardDescriptionView)
   }
 
-  const onClickCard = (card: AnyCard) => {
-    setSelectedCard(card)
+  const onClickCard = (cardId: AnyCard['id']) => {
+    setSelectedCardId(cardId)
     setIsShowingChooseActionModal(true)
   }
 
   const legalMovesForCurrentCard = (): PlayerMove[] => {
-    if (!selectedCard) return []
-    return gameState.legalMoves.filter((move) => move.card.id === selectedCard.id)
+    if (!selectedCardId) return []
+    return gameState.legalMoves.filter((move) => move.cardId === selectedCardId)
   }
 
   const onClickCardAction = (moveType: PlayerMoveType) => {
-    if (!selectedCard) {
+    if (!selectedCardId) {
       return
     }
-    const legalMoves = gameState.legalMoves.filter((move) => move.card.id === selectedCard.id && move.type == moveType)
+    const legalMoves = gameState.legalMoves.filter((move) => move.cardId === selectedCardId && move.type == moveType)
 
     if (!legalMoves) {
       console.log('no legal moves, must be some error...')
@@ -75,7 +75,7 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
     } else {
       setIsShowingAdjustTransactionModal(true)
       setLegalMoveCandidates(legalMoves)
-      console.log('available legal moves for card', selectedCard.id, 'to perform', moveType, 'are', legalMoves)
+      console.log('available legal moves for card', selectedCardId, 'to perform', moveType, 'are', legalMoves)
       console.log('user needs to choose one')
     }
   }
@@ -106,24 +106,24 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
       <PlayedCardsView {...{ gameState }} />
       {/* bottom: hand cards and other actions */}
       <CurrentPlayerActionView
-        {...{ gameState, selectedCard, onClickCard }}
+        {...{ onClickCard, selectedCardId, gameState }}
         onClickSettings={() => {
-          // TODO:
+          // TODO: show settings
         }}
         onClickLeaderboard={() => {
           setIsShowingLeaderboard(true)
         }}
       />
-      {isShowingChooseActionModal && selectedCard && (
+      {isShowingChooseActionModal && selectedCardId && (
         <ChooseMoveModal
           legalMoves={legalMovesForCurrentCard()}
-          card={selectedCard}
+          cardId={selectedCardId}
           onClickMoveType={(moveType) => {
             onClickCardAction(moveType)
           }}
           onClickCancel={() => {
             setIsShowingChooseActionModal(false)
-            setSelectedCard(undefined)
+            setSelectedCardId(undefined)
           }}
         />
       )}
@@ -147,6 +147,7 @@ export default function BoardScreen({ gameState, onSelectPlayerMove }: Props) {
         />
       )}
       {isShowingMonetarylossPanel && (
+        // TODO: finish this
         <div className="absolute flex w-1/2 flex-col items-center bg-violet-300">
           <div className="flex flex-row items-center gap-x-4">
             <div className="text-3xl">-</div>
